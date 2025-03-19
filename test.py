@@ -20,22 +20,17 @@ helpbutton = gui.Button(root, text="Help", padx=5, pady=5, cursor="hand2")
 helpbutton.place(x=845, y=50)
 editbutton = gui.Button(root, text="Edit Item", padx=5, pady=5, cursor="hand2")
 editbutton.place(x=161, y=50)
-scrollbar = gui.Scrollbar(root)
-scrolllist = gui.Listbox(root, yscrollcommand = scrollbar.set, width=150, height=10)
-with open('database.txt')as f:
-    list = list(f)
-for item in list:
-        bookname = ''
-        for i in range(0,len(item)):
-            if item[i] == "*":
-                break
-            else:
-                bookname = (bookname)+str(item[i])
-        scrolllist.insert(bookcount,bookname)
-scrolllist.place(x=80, y=100)
-scrollbar.config(command = scrolllist.yview)
-scrollbar.place(x=50, y=100)
-
+entry = gui.Text(root, height=10, width=50)
+entry.pack(side='left', fill='both', expand=True)
+scrollbar = gui.Scrollbar(root, orient='vertical', command=entry.yview)
+scrollbar.pack(side='right', fill='y')
+entry.config(yscrollcommand=scrollbar.set)
+for i in range(0,20):
+    f = open('database.txt')
+    line = len(f.readlines())
+    content = f.readlines()
+    for j in range(0, len(f.readlines())):
+        entry.insert('end', str(content[j]))
 
 
 
