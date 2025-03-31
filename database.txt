@@ -1,5 +1,6 @@
-Animal Farm*Orwell, George*9780141036137*Yes
-The Book of Bill*Hirsch, Alex*9781368092203*Yes
-It's Catching: The Infectious World of Germs and Microbes*Gardy, Jennifer*9781771470018*No
-Kirby: Art & Style Collection*VIZ Media*9781974711796*No
-The Natural History of Insects*Walters, Martin*9781844764686*Yes
+Animal Farm*Orwell, George*9780141036137*Book\n
+The Book of Bill*Hirsch, Alex*9781368092203*Book\n
+It's Catching: The Infectious World of Germs and Microbes*Gardy, Jennifer*9781771470018*Book\n
+I Did: Bloom*Yves*52978452398462*CD\n
+Kirby: Art & Style Collection*VIZ Media*9781974711796*Book\n
+The Natural History of Insects*Walters, Martin*9781844764686*Book\n
