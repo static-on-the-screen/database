@@ -1,0 +1,262 @@
+database = open('database.txt', 'r')
+import tkinter as gui
+
+
+bookname = ''
+bookcount = 5
+titlelist=[]
+authorlist=[]
+isbnlist=[]
+medialist=[]
+mediaoptions=["Book", "CD", "DVD", "Magazine"]
+
+
+def updatelistbox_add():
+    global scrolllist
+    global title_add
+    global bookcount
+    global surname_add
+    global name_add
+    global isbn_add
+    global type_add
+    bookcount = bookcount + 1
+    titlelist.append(title_add)
+    authorlist.append(surname_add+" ,"+name_add)
+    isbnlist.append(isbn_add)
+    medialist.append(type_add)
+    scrolllist.insert('end', title_add)
+    print(titlelist)
+
+def updatelistbox_delete():
+    global scrolllist
+    global xlinenumber
+    scrolllist.delete(int(xlinenumber))
+
+
+def submititem():
+    global title_add
+    global surname_add
+    global name_add
+    global isbn_add
+    global type_add
+    title_add = addtitle.get()
+    surname_add = addsurname.get()
+    name_add = addname.get()
+    isbn_add = addisbn.get()
+    type_add = value_inside.get()
+
+    with open('database.txt', 'a') as file:
+        file.write("\n")
+        file.write(title_add+"*"+surname_add+", "+name_add+'*'+isbn_add+'*'+type_add+'\\n')
+
+    addwindow.destroy()
+    addwindow.update()
+
+    updatelistbox_add()
+
+
+def deleteitem():
+    global deletewindow
+    global deletelist
+    global titlelist
+    deletewindow = gui.Toplevel(root)
+    deletewindow.title("Delete Item")
+    deletewindow.geometry("500x375")
+    deletelabel = gui.Label(deletewindow, text="Delete Item", justify="center", font=("Times New Roman", 20, "bold"))
+    deletesublabel = gui.Label(deletewindow, text="Select the item you want to delete, then press Delete Item.", justify="center")
+    deletelabel.pack()
+    deletesublabel.pack()
+    deletebar = gui.Scrollbar(deletewindow)
+    deletelist = gui.Listbox(deletewindow, yscrollcommand = deletebar.set, width=70, height=10)
+    for i in range(0, len(titlelist)):
+        deletelist.insert(bookcount, titlelist[i])
+    deletebar.config(command = scrolllist.yview)
+    deletebar.place(x=10,y=75)
+    deletelist.place(x=40,y=75)
+    delete = gui.Button(deletewindow, text="Delete Item", command=deleteitembutton)
+    delete.place(x=210, y=250)
+
+def deleteitembutton():
+    global xlinenumber
+    x_x=''
+    newfile=''
+    xlinenumber = 0
+    x_get = 0
+    for i in deletelist.curselection():
+        x_x = x_x+(deletelist.get(i))
+    with open('database.txt', 'r+') as file:
+        for num, line in enumerate(file, 1):
+            if x_x in line:
+                x_get = 1
+                continue
+            else:
+                newfile=newfile+line
+                if x_get == 0:
+                    xlinenumber = xlinenumber+1
+    with open('database.txt', 'w') as file:
+        file.write(newfile)
+    deletewindow.destroy()
+    deletewindow.update()
+    updatelistbox_delete()
+
+
+def addmedia():
+    global addwindow
+    global addtitle
+    global addsurname
+    global addname
+    global addisbn
+    global value_inside
+
+    addwindow = gui.Toplevel(root)
+    addwindow.title("Add Item")
+    addwindow.geometry("500x375")
+    
+    addmedialabel= gui.Label(addwindow, text="Add Item", justify="center", font=("Times New Roman", 20, "bold"))
+    addmedialabel.pack()
+    titlelabel = gui.Label(addwindow, text="Title:")
+    titlelabel.pack()
+    addtitle = gui.Entry(addwindow)
+    addtitle.pack()
+    surnamelabel = gui.Label(addwindow, text="Author Surname:")
+    surnamelabel.pack()
+    addsurname = gui.Entry(addwindow)
+    addsurname.pack()
+    namelabel = gui.Label(addwindow, text="Author's First Name:")
+    namelabel.pack()
+    addname = gui.Entry(addwindow)
+    addname.pack()
+    isbnlabel = gui.Label(addwindow, text="ISBN:")
+    isbnlabel.pack()
+    addisbn = gui.Entry(addwindow)
+    addisbn.pack()
+    medialabel = gui.Label(addwindow, text="Media Type:")
+    value_inside = gui.StringVar(addwindow)
+    value_inside.set("Book")
+    addmedia = gui.OptionMenu(addwindow, value_inside, *mediaoptions)
+    medialabel.pack()
+    addmedia.pack()
+    submitbutton = gui.Button(addwindow, text="Add Item", command=submititem)
+    submitbutton.pack()
+
+
+def helppage():
+    helpwindow = gui.Toplevel(root)
+    helpwindow.title("Help")
+    helpwindow.geometry("800x375")
+    helplabel1 = gui.Label(helpwindow, text="How to Use Database", justify='center',font=("Times New Roman", 20, "bold"))
+    helplabel1.pack()
+    helplabel2 = gui.Label(helpwindow, text="Adding an Item", justify='left',font=("Times New Roman", 15, "bold"))
+    helplabel2.pack()
+    helptext2 = gui.Label(helpwindow, text="Click the 'Add Item' button. After filling out all fields, confirm by pressing 'Add Item' at the bottom.", justify='left')
+    helptext2.pack()
+    helplabel3 = gui.Label(helpwindow, text="Deleting an Item", justify='left',font=("Times New Roman", 15, "bold"))
+    helplabel3.pack()
+    helptext3 = gui.Label(helpwindow, text="Click the 'Delete Item' button. Choose the item to be deleted on the listbox by clicking it, then press 'Delete Item' at the bottom.", justify='left')
+    helptext3.pack()
+    helplabel4 = gui.Label(helpwindow, text="Viewing Item Information", justify='left',font=("Times New Roman", 15, "bold"))
+    helplabel4.pack()
+    helptext4 = gui.Label(helpwindow, text="Choose desired item on the listbox by clicking it. Then press the 'View Item Information' button to check the title, author, ISBN, and media type.", justify='left')
+    helptext4.pack()
+
+def viewinfo():
+    item = scrolllist.curselection()
+    item = item[0]
+    infowindow = gui.Toplevel(root)
+    infowindow.title(str(titlelist[item]))
+    infowindow.geometry("500x375")
+    titlelabel = gui.Label(infowindow, text="Title: "+str(titlelist[item]))
+    titlelabel.place(x=20, y=15)
+    authorlabel = gui.Label(infowindow, text="Author Name: "+str(authorlist[item]))
+    authorlabel.place(x=20, y=40)
+    isbnlabel = gui.Label(infowindow, text="ISBN: "+str(isbnlist[item]))
+    isbnlabel.place(x=20, y=65)
+    typelabel = gui.Label(infowindow, text="Media Type: "+str(medialist[item]))
+    typelabel.place(x=20, y=90)
+
+root = gui.Tk()
+root.title("NPLDatabase.exe")
+root.geometry("900x650")
+title1 = gui.Label(root, text="Nondescript Public Library Database", font=("Times New Roman", 25, "bold"))
+title1.pack()
+addbutton = gui.Button(root, text="Add Item", padx=5, pady=5, cursor="hand2", command=addmedia)
+addbutton.place(x=10, y=50)
+deletebutton = gui.Button(root, text="Delete Item", padx=5, pady=5, cursor="hand2", command=deleteitem)
+deletebutton.place(x=80, y=50)
+helpbutton = gui.Button(root, text="Help", padx=5, pady=5, cursor="hand2", command=helppage)
+helpbutton.place(x=845, y=50)
+scrollbar = gui.Scrollbar(root)
+scrolllist = gui.Listbox(root, yscrollcommand = scrollbar.set, width=125, height=10)
+with open('database.txt')as f:
+    list = list(f)
+for item in list:
+        bookname = ''
+        for i in range(0,len(item)):
+            if item[i] == "*":
+                break
+            else:
+                bookname = (bookname)+str(item[i])
+        scrolllist.insert('end',bookname)
+        titlelist.append(bookname)
+
+for item in list:
+    seperate = 0
+    author = ''
+    for a in range(0, len(item)):
+        if item[a] == '*':
+            if seperate == 1:
+                break
+            elif seperate == 0:
+                seperate = seperate+1
+                continue
+        else:
+            if seperate == 0:
+                continue
+            elif seperate == 1:
+               author = (author)+str(item[a])
+    authorlist.append(author)
+
+for item in list:
+    seperate = 0
+    isbn = ''
+    for a in range(0, len(item)):
+        if item[a] == '*':
+            if seperate == 2:
+                break
+            elif seperate == 0 or seperate == 1:
+                seperate = seperate+1
+                continue
+        else:
+            if seperate == 0 or seperate == 1:
+                continue
+            elif seperate == 2:
+               isbn = (isbn)+str(item[a])
+    isbnlist.append(isbn)
+
+for item in list:
+    seperate = 0
+    mediatype = ''
+    for a in range(0, len(item)):
+        if item[a] == '*':
+            if seperate == 3:
+                break
+            elif seperate == 0 or seperate == 1 or seperate == 2:
+                seperate = seperate+1
+                continue
+        else:
+            if seperate == 0 or seperate == 1 or seperate == 2:
+                continue
+            elif seperate == 3:
+                if item[a] == '\\':
+                    break
+                else:
+                    mediatype = (mediatype)+str(item[a])
+    medialist.append(mediatype)
+
+scrolllist.place(x=80, y=100)
+scrollbar.config(command = scrolllist.yview)
+scrollbar.place(x=50, y=100)
+infobutton = gui.Button(root, text="View Item Information", command=viewinfo, padx=5, pady=5)
+infobutton.place(x=375, y=275)
+
+root.mainloop()
